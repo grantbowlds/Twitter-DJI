@@ -1,0 +1,58 @@
+---
+title: "Tweets-DJI Main"
+author: "bowldsgf"
+date: "4/5/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(ggplot2)    
+library(dplyr)    
+library(readr)
+library(lubridate)
+
+
+tweets <- read.csv(file = "C:/Users/grant/OneDrive/Desktop/MATH 2820L/Twitter-DJI/Data/trumptweets.csv")
+dji <- read.csv(file = "C:/Users/grant/OneDrive/Desktop/MATH 2820L/Twitter-DJI/Data/^DJI.csv")
+
+dji <- dji %>%
+  mutate(perchange = (Close-Open)/Open *100)
+
+dji <- dji %>%
+  mutate(perchange = (Close-Open)/Open *100)
+
+tweets <- tweets %>%
+  mutate(date = ymd_hms(date))
+tweets <- tweets %>%
+  mutate(date = round_date(date, "day"))
+
+dji <- dji %>%
+  mutate(date = ymd(Date))
+
+head(dji)
+
+overlapDates <- interval(ymd(20170120), ymd(20200331)
+                         )
+tweets <- tweets %>% 
+  filter(date %within% overlapDates)
+dji <- dji %>%
+  filter(date %within% overlapDates)
+
+tweetBD <- tweets %>% group_by(date) %>% tally()
+
+print(tweetBD)
+tweetBD <- tweetBD %>%
+  mutate(date = ymd(date))
+
+dplr <- left_join(dji, tweetBD, by=c("date"))
+
+
+ggplot(dplr, aes(y = perchange, x = date, color = n)) + 
+    geom_point(alpha = 0.5)
+
+```
