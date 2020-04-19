@@ -1,0 +1,118 @@
+---
+title: "Tweets-DJI Main"
+author: "bowldsgf"
+date: "4/19/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(ggplot2)    
+library(dplyr)    
+library(readr)
+library(lubridate)
+library(tidyr)
+library(wesanderson)
+library(ggrepel)
+
+
+tweets <- read.csv(file = "C:/Users/grant/OneDrive/Desktop/MATH 2820L/Twitter-DJI/Data/trumptweets.csv")
+dji <- read.csv(file = "C:/Users/grant/OneDrive/Desktop/MATH 2820L/Twitter-DJI/Data/^DJI.csv")
+
+dji <- dji %>%
+  mutate(perchange = (Close-Open)/Open *100)
+
+dji <- dji %>%
+  mutate(perchange = (Close-Open)/Open *100)
+
+tweets <- tweets %>%
+  mutate(date = ymd_hms(date))
+tweets <- tweets %>%
+  mutate(date = round_date(date, "day"))
+
+dji <- dji %>%
+  mutate(date = ymd(Date))
+
+
+overlapDates <- interval(ymd(20170120), ymd(20200331)
+                         )
+tweets <- tweets %>% 
+  filter(date %within% overlapDates)
+dji <- dji %>%
+  filter(date %within% overlapDates)
+
+tweetBD <- tweets %>% group_by(date) %>% tally()
+
+tweetBD <- tweetBD %>%
+  mutate(date = ymd(date))
+  
+tweetBD %>%
+  mutate(date = as.Date(date))
+
+tweetBD$n[tweetBD$n>5] <- 5
+tweetBD$n <- as.integer(tweetBD$n)
+
+dplr <- left_join(dji, tweetBD, by=c("date"))
+
+right = replicate(804, 0)
+right <- as.integer(right)
+
+dplr$n <- coalesce(dplr$n, right)
+                   
+nZero <- dplr %>%
+  filter(n == 0)
+nOne <- dplr %>%
+  filter(n == 1)
+nTwo <- dplr %>%
+  filter(n == 2)
+nThree <- dplr %>%
+  filter(n == 3)
+nFour <- dplr %>%
+  filter(n == 4)
+fiveUp <- dplr %>%
+  filter(n >= 5)
+
+suppressMessages(library("dplyr"))
+
+mZero=lm(perchange~date,data=nZero)
+summary(mZero)
+confint(mZero)
+mOne=lm(perchange~date,data=nOne)
+summary(mOne)
+confint(mOne)
+mTwo=lm(perchange~date,data=nTwo)
+summary(mTwo)
+confint(mTwo)
+mThree=lm(perchange~date,data=nThree)
+summary(mThree)
+confint(mThree)
+mFour=lm(perchange~date,data=nFour)
+summary(mFour)
+confint(mFour)
+mFive=lm(perchange~date,data=fiveUp)
+summary(mFive)
+confint(mFive)
+
+
+
+  
+p <- ggplot(dplr, aes(y = perchange, x = date, color = factor(n))) +
+    theme(plot.title = element_text(hjust = 0.5))+
+    geom_point(alpha = 0.75)+
+    geom_abline(intercept = 10.0730611, slope = -0.0005575, size =1.2, color = "#49997c")+
+    geom_abline(intercept = -1.111e+01, slope = 6.437e-04, size =1.2, color = "#1ebecd")+
+    geom_abline(intercept = -1.784e+01, slope = 1.029e-03, size =1.2, color = "#027ab0")+
+    geom_abline(intercept = -3.9308183, slope = 0.0002251, size =1.2, color = "#F4BAC8")+
+    geom_abline(intercept = 16.0250693, slope = -0.0009236, size =1.2, color = "#ae3918")+
+    geom_abline(intercept = 1.803e-01, slope = -9.026e-06, size =1.2, color = "#d19c2f")+
+    labs(title= "President Trump's Twitter\nand the Stock Market", y="Effect on Dow Jones (%)", x = "Date",
+         color = "Number of Tweets")
+
+p + scale_color_manual(values = c("#49997c", "#1ebecd", "#027ab0", "#F4BAC8", "#ae3918", "#d19c2f"))
+    
+
+```
