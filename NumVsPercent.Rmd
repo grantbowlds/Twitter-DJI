@@ -113,6 +113,54 @@ p <- ggplot(dplr, aes(y = perchange, x = date, color = factor(n))) +
          color = "Number of Tweets")
 
 p + scale_color_manual(values = c("#49997c", "#1ebecd", "#027ab0", "#F4BAC8", "#ae3918", "#d19c2f"))
-    
 
+mod_results <- data.frame(observed = nZero$perchange, predicted = mZero$fitted.values, residual = mZero$residuals)
+
+ggplot(mod_results, aes(y = residual, x = predicted)) + 
+    geom_point() + 
+    geom_hline(yintercept = 0)
+ggplot(mod_results, aes(sample = residual)) + 
+    geom_qq()
+
+mod_results1 <- data.frame(observed = nOne$perchange, predicted = mOne$fitted.values, residual = mOne$residuals)
+
+ggplot(mod_results1, aes(y = residual, x = predicted)) + 
+    geom_point() + 
+    geom_hline(yintercept = 0)
+ggplot(mod_results1, aes(sample = residual)) + 
+    geom_qq()
+
+mod_results2 <- data.frame(observed = nTwo$perchange, predicted = mTwo$fitted.values, residual = mTwo$residuals)
+
+ggplot(mod_results2, aes(y = residual, x = predicted)) + 
+    geom_point() + 
+    geom_hline(yintercept = 0)
+ggplot(mod_results2, aes(sample = residual)) + 
+    geom_qq()
+
+mod_results3 <- data.frame(observed = nThree$perchange, predicted = mThree$fitted.values, residual = mThree$residuals)
+
+ggplot(mod_results3, aes(y = residual, x = predicted)) + 
+    geom_point() + 
+    geom_hline(yintercept = 0)
+ggplot(mod_results3, aes(sample = residual)) + 
+    geom_qq()
+
+mod_results4 <- data.frame(observed = nFour$perchange, predicted = mFour$fitted.values, residual = mFour$residuals)
+
+ggplot(mod_results4, aes(y = residual, x = predicted)) + 
+    geom_point() + 
+    geom_hline(yintercept = 0)
+ggplot(mod_results4, aes(sample = residual)) + 
+    geom_qq()
+
+mod_results5 <- data.frame(observed = fiveUp$perchange, predicted = mFive$fitted.values, residual = mFive$residuals)
+
+ggplot(mod_results5, aes(y = residual, x = predicted)) + 
+    geom_point() + 
+    geom_hline(yintercept = 0)
+ggplot(mod_results5, aes(sample = residual)) + 
+    geom_qq()
+
+print(median(dplr$n))
 ```
